@@ -9,6 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -16,6 +17,8 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setIsLoading(true);
 
     // Frontend validation
     if (!email) {
@@ -57,6 +60,8 @@ const Login = () => {
 
       console.log("data in login", data);
 
+      setIsLoading(false);
+
       if (
         !data.success &&
         data.message == "You are not verified. Register again"
@@ -82,6 +87,7 @@ const Login = () => {
   return (
     <div className="min-h-screen">
       <AuthCard
+        isLoading={isLoading}
         error={error}
         success={success}
         title="Login"

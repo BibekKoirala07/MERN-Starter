@@ -11,6 +11,8 @@ const ResetPassword = () => {
 
   console.log("token", token);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +21,7 @@ const ResetPassword = () => {
   const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setIsLoading(true);
     setSuccess(null);
     setError(null);
     // Validation
@@ -57,6 +60,8 @@ const ResetPassword = () => {
 
       console.log("data: " + data);
 
+      setIsLoading(false);
+
       if (!data.success) {
         setError(data.message || "Password reset failed");
       } else {
@@ -77,6 +82,7 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen">
       <AuthCard
+        isLoading={isLoading}
         onClick={(e) =>
           handleResetPassword(e as unknown as React.FormEvent<HTMLFormElement>)
         }

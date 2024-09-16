@@ -4,6 +4,7 @@ import AuthCard from "@/components/auth/AuthCard";
 import EachInput from "@/components/auth/EachInput";
 
 const ForgotPassword = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -12,6 +13,8 @@ const ForgotPassword = () => {
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+
+    setIsLoading(true);
 
     console.log("activated");
 
@@ -45,6 +48,7 @@ const ForgotPassword = () => {
       const data = await response.json();
 
       console.log("data", data);
+      setIsLoading(false);
 
       if (!data.success) {
         setError(data.message || "Request failed");
@@ -62,6 +66,7 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen">
       <AuthCard
+        isLoading={isLoading}
         onClick={(e) =>
           handleRequestPasswordReset(
             e as unknown as React.FormEvent<HTMLFormElement>

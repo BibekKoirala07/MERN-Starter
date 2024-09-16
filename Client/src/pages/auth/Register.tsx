@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const naviagte = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,6 +40,7 @@ const Register = () => {
 
     // dispatch(loginStart());
 
+    setIsLoading(true);
     setError(null);
     setSuccess(null);
 
@@ -91,6 +93,7 @@ const Register = () => {
 
       if (!data.success) {
         setError(data.message || "Registration failed");
+        setIsLoading(false);
       } else {
         setSuccess(data.message);
         // if (data.data) {
@@ -105,12 +108,14 @@ const Register = () => {
       setError(
         (error as Error).message || "An error occurred during registration"
       );
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen">
       <AuthCard
+        isLoading={isLoading}
         error={error}
         success={success}
         title="Register"

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import EachInput from "@/components/auth/EachInput";
 import AuthCard from "@/components/auth/AuthCard";
 import { AppDispatch, loginStart, loginSuccess } from "@/store/store";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const VerifyEmail = () => {
@@ -12,6 +12,8 @@ const VerifyEmail = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // get data from redux toolkit
+  const { isLoading } = useSelector((state: any) => state.user);
   const dispatch: AppDispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,6 +68,7 @@ const VerifyEmail = () => {
   return (
     <div className="min-h-screen">
       <AuthCard
+        isLoading={isLoading}
         buttonText="Verify"
         error={error}
         success={success}

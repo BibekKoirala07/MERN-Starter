@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface AuthCardProps {
+  isLoading: boolean;
   title: string;
   description: string;
   success: string | null;
@@ -30,6 +31,7 @@ interface AuthCardProps {
 }
 
 const AuthCard: React.FC<AuthCardProps> = ({
+  isLoading,
   error,
   title,
   buttonText,
@@ -76,7 +78,11 @@ const AuthCard: React.FC<AuthCardProps> = ({
               </Button>
             </div>
           )}
-          <Button className="w-full mt-2" onClick={onClick}>
+          <Button
+            disabled={isLoading}
+            className="w-full mt-2"
+            onClick={onClick}
+          >
             {buttonText || "Submit"}
           </Button>
         </CardContent>
