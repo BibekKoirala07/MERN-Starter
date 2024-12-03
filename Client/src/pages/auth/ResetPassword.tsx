@@ -65,11 +65,13 @@ const ResetPassword = () => {
       if (!data.success) {
         setError(data.message || "Password reset failed");
       } else {
-        navigate("/");
-        setSuccess("Password successfully reset!");
         // Clear fields after success
         setNewPassword("");
         setConfirmPassword("");
+        setSuccess("Password successfully reset!");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
       }
     } catch (error) {
       setError(

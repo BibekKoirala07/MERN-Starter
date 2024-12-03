@@ -8,6 +8,8 @@ const {
   forgotPasswordController,
   resetPasswordController,
   checkMeController,
+  resendVerificationEmailController,
+  resendResetPasswordLinkController,
 } = require("../controllers/userController");
 const { requireAuth } = require("../middlewares/requireAuth");
 
@@ -21,6 +23,8 @@ userRoutes.post("/login", loginController);
 
 userRoutes.get("/verify-email/:token", verifyEmailController);
 
+userRoutes.get("/resend-verify-email", resendVerificationEmailController);
+
 // userRoutes.post("/social-register", socialRegister);
 
 // userRoutes.post("/social-login", socialLogin);
@@ -30,6 +34,8 @@ userRoutes.get("/verify-email/:token", verifyEmailController);
 // userRoutes.delete("/delete-account/:id", requireAuth, deleteAccount);
 
 userRoutes.post("/forgot-password", forgotPasswordController);
+
+userRoutes.post("/resend-forgot-password", resendResetPasswordLinkController);
 
 userRoutes.post("/reset-password/:token", resetPasswordController);
 

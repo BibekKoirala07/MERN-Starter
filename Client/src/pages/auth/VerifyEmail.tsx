@@ -5,6 +5,7 @@ import AuthCard from "@/components/auth/AuthCard";
 import { AppDispatch, loginStart, loginSuccess } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
@@ -65,6 +66,34 @@ const VerifyEmail = () => {
     }
   };
 
+  const handleResendEmail = async () => {
+    try {
+      const url = `http://localhost:3000/api/auth/resend-verify-email`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        setError(data.message || "Failed to resend verification email");
+      } else {
+        setSuccess(
+          "A new verification email has been sent to your email address."
+        );
+      }
+    } catch (error) {
+      setError(
+        (error as Error).message ||
+          "An error occurred while resending the email"
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <AuthCard
@@ -75,7 +104,7 @@ const VerifyEmail = () => {
         title="Verify Your Email"
         description="Enter the 6-digit code sent to your email"
         footerLinkText="Need a new code? Request again"
-        footerLinkTo="/auth/request-code"
+        footerLinkTo="/auth/verify-email"
         onClick={(e) =>
           handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>)
         }
@@ -88,6 +117,9 @@ const VerifyEmail = () => {
             setState={setCode}
             placeholder="Enter the 6-digit code..."
           />
+          {/* <Button type="button" onClick={handleResendEmail}>
+            Resend Email
+          </Button> */}
         </form>
       </AuthCard>
     </div>

@@ -60,6 +60,7 @@ const ForgotPassword = () => {
       setError(
         (error as Error).message || "An error occurred during the request"
       );
+      setIsLoading(false);
     }
   };
 

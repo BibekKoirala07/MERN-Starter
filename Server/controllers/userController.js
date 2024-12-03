@@ -97,22 +97,28 @@ const loginController = async (req, res, next) => {
         expires: expiryDate,
       });
 
-      return res.status(200).json({
-        statusCode: 200,
-        success: true,
-        data,
-        message: "Logged In Successfully",
-      });
+      setTimeout(() => {
+        return res.status(200).json({
+          statusCode: 200,
+          success: true,
+          data,
+          message: "Logged In Successfully",
+        });
+      }, 2000);
     } else {
-      return res.status(200).json({
-        success: false,
-        statusCode: 200,
-        message: "You are not verified. Register again",
-      });
+      setTimeout(() => {
+        return res.status(200).json({
+          success: false,
+          statusCode: 200,
+          message: "You are not verified. Register again",
+        });
+      }, 2000);
     }
   } catch (error) {
-    console.log("error:", error);
-    next(error);
+    setTimeout(() => {
+      console.log("error:", error);
+      next(error);
+    }, 2000);
   }
 };
 
@@ -156,6 +162,34 @@ const verifyEmailController = async (req, res, next) => {
         data: user,
         message: "Email verified successfully",
       });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resendVerificationEmailController = async (req, res, next) => {
+  try {
+    const user = await UserModel.findOne({ email, isVerified: false });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found or already verified",
+      });
+    }
+
+    // Generate new verification token
+    user.verificationToken = crypto.randomBytes(20).toString("hex");
+    user.verificationTokenExpiresAt = Date.now() + 3600000; // Token expires in 1 hour
+    await user.save();
+
+    // Send new verification email
+    await sendVerificationEmail(user.email, user.verificationToken);
+
+    return res.status(200).json({
+      success: true,
+      message: "New verification email sent",
+    });
   } catch (error) {
     next(error);
   }
@@ -247,12 +281,45 @@ const resetPasswordController = async (req, res) => {
   }
 };
 
+const resendResetPasswordLinkController = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Generate a new reset password token
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = Date.now() + 3600000; // Token expires in 1 hour
+    await user.save();
+
+    // Send new reset password email
+    await sendResetPasswordEmail(user.email, resetToken);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset link sent to your email",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   checkMeController,
   registerController,
   loginController,
   verifyEmailController,
-  logoutController,
+  resendVerificationEmailController,
   forgotPasswordController,
+  resendResetPasswordLinkController,
   resetPasswordController,
+  logoutController,
 };
